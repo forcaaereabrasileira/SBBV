@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+				xmlns:ui="http://java.sun.com/jsf/facelets"
+				xmlns:h="http://java.sun.com/jsf/html"
+				xmlns:p="http://primefaces.org/ui"
+				xmlns:adm="http://github.com/adminfaces"
+				xmlns:c="http://java.sun.com/jsp/jstl/core"
+				xmlns:f="http://java.sun.com/jsf/core"
+				xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+				template="/WEB-INF/template/template.xhtml">
+
+	<ui:define name="title">Mapear Unidade</ui:define>
+	<ui:define name="description">Tutorial sobre como mapear uma unidade de rede</ui:define>
+
+	<ui:define name="body">
+		<adm:breadcrumb title="Mapear Unidade" />
+		<ol>
+			<li>Para mapear uma unidade de rede, primeiramente você deve abrir o Windows Explorer através do icone ou do atalho do teclado <i class="fa fa-windows"> + E</i>.</li>
+			<li>
+				Após, clicaremos com o botão direito no icone do computador e selecionaremos a opção "Mapear unidade de rede...".<br />
+				<p:graphicImage library="tutoriais" name="mapear_unidade_1.jpg" />
+			</li>
+			<li>
+				Preencheremos os dados da tela conforme a imagem abaixo.<br />
+				<p:graphicImage library="tutoriais" name="mapear_unidade_2.jpg" />
+			</li>
+			<li>
+				Será solicitado o usuário e senha.<br />
+				Usuário: pamals.intraer\cdcpvirtual<br />
+				Senha: cdcpvirtual<br />
+				<p:graphicImage library="tutoriais" name="mapear_unidade_3.jpg" />
+			</li>
+			<li>Após estes passos, é só fazer o acesso conforme tutorial em cada publicação.</li>
+		</ol>
+	</ui:define>
+
+</ui:composition>

@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+				xmlns:ui="http://java.sun.com/jsf/facelets"
+				xmlns:h="http://java.sun.com/jsf/html"
+				xmlns:p="http://primefaces.org/ui"
+				xmlns:adm="http://github.com/adminfaces"
+				xmlns:c="http://java.sun.com/jsp/jstl/core"
+				xmlns:f="http://java.sun.com/jsf/core"
+				xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+				template="/WEB-INF/template/template.xhtml">
+
+	<ui:define name="title">CDCP - PAMA-LS</ui:define>
+	<ui:define name="description">Lista de publicações da Biblioteca Virtual do PAMA-LS</ui:define>
+
+	<ui:define name="body">
+		<adm:breadcrumb title="Publicações" />
+		<h:form id="publicacoes">
+			<style type="text/css">.ui-datatable-header { height: 50px; }</style>
+			<p:dataTable id="publicacoes" widgetVar="publicacoesTable" var="publicacao" value="#{publicacoes.publicacoes}" emptyMessage="Nenhuma publicação cadastrada." paginator="true" rows="10" paginatorPosition="bottom" paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}" currentPageReportTemplate="Filtrados: {totalRecords} | Página {currentPage} de {totalPages}" rowsPerPageTemplate="10,50" resizableColumns="true">
+				<p:column headerText="Número" width="20%" sortBy="#{publicacao.numero}" filterBy="#{publicacao.numero}" filterMatchMode="contains">
+					<h:outputText value="#{publicacao.numero}" />
+				</p:column>
+				<p:column headerText="Título" sortBy="#{publicacao.titulo}" filterBy="#{publicacao.titulo}" filterMatchMode="contains">
+					<h:outputText value="#{publicacao.titulo}" />
+				</p:column>
+				<p:column headerText="Projeto" width="12%" sortBy="#{publicacao.projeto.projeto}" filterBy="#{publicacao.projeto.projeto}" filterMatchMode="in">
+					<f:facet name="filter">
+						<p:selectCheckboxMenu label="Projetos" onchange="PF('publicacoesTable').filter()" scrollHeight="150" styleClass="custom-filter" style="width: 100%" filter="true" filterMatchMode="contains">
+							<f:selectItems value="#{publicacoes.projetos}" />
+						 </p:selectCheckboxMenu>
+					</f:facet>
+					<h:outputText value="#{publicacao.projeto.projeto}" />
+				</p:column>
+				<p:column headerText="Fabricante" width="12%" sortBy="#{publicacao.fabricante.fabricante}" filterBy="#{publicacao.fabricante.fabricante}" filterMatchMode="in">
+					<f:facet name="filter">
+						<p:selectCheckboxMenu label="Fabricantes" onchange="PF('publicacoesTable').filter()" scrollHeight="150" styleClass="custom-filter" style="width: 100%" filter="true" filterMatchMode="contains">
+							<f:selectItems value="#{publicacoes.fabricantes}" />
+						 </p:selectCheckboxMenu>
+					</f:facet>
+					<h:outputText value="#{publicacao.fabricante.fabricante}" />
+				</p:column>
+				<p:column style="width: 62px; text-align: right;">
+					<p:tooltip position="left" showEffect="fade" hideEffect="fade" />
+					<p:commandButton update="detalhe" icon="fa fa-info" title="Detalhes" onsuccess="PF('detalhesDialog').show();" onerror="alert('Algo ocorreu, tente novamente.');">
+						<f:setPropertyActionListener value="#{publicacao}" target="#{publicacoes.publicacao}" />
+					</p:commandButton>
+					<p:commandButton update="acesso,tutoriais" icon="fa fa-search" title="Informações de acesso" onsuccess="PF('acessosDialog').show();" onerror="alert('Algo ocorreu, tente novamente.');" rendered="#{not publicacao.linkExterno}">
+						<f:setPropertyActionListener value="#{publicacao}" target="#{publicacoes.publicacao}" />
+					</p:commandButton>
+					<p:button icon="fa fa-external-link" title="Acessar publicação" href="#{publicacao.url}" target="_blank" rendered="#{publicacao.linkExterno}" />
+				</p:column>
+				<f:facet name="footer">Total: #{fn:length(accesses.accesses)}</f:facet>
+			</p:dataTable>
+		</h:form>
+		<p:dialog header="Informações" style="width: 80%;" widgetVar="detalhesDialog" modal="true" draggable="true" closable="true" resizable="false" showHeader="true" showEffect="fade" hideEffect="fade" closeOnEscape="true" dynamic="true" width="70%">
+			<h:form id="detalhe">
+				<div class="ui-fluid">
+					<p:panelGrid layout="grid" columns="2" columnClasses="ui-g-4,ui-g-8">
+						<h:outputText value="Título:" />
+						<h:outputText value="#{publicacoes.publicacao.titulo}" rendered="#{not sessao.editor}" />
+						<p:inputText value="#{publicacoes.publicacao.titulo}" rendered="#{sessao.editor}" />
+						<h:outputText value="Número:" />
+						<h:outputText value="#{publicacoes.publicacao.numero}" rendered="#{not sessao.editor}" />
+						<p:inputText value="#{publicacoes.publicacao.numero}" rendered="#{sessao.editor}" />
+						<h:outputText value="Projeto:" />
+						<h:outputText value="#{publicacoes.publicacao.projeto}" rendered="#{not sessao.editor}" />
+						<p:selectOneMenu value="#{publicacoes.publicacao.projeto}" converter="omnifaces.SelectItemsIndexConverter" rendered="#{sessao.editor}">
+							<f:selectItems value="#{publicacoes.projetos}" />
+						</p:selectOneMenu>
+						<h:outputText value="Fabricante:" />
+						<h:outputText value="#{publicacoes.publicacao.fabricante}" rendered="#{not sessao.editor}" />
+						<p:selectOneMenu value="#{publicacoes.publicacao.fabricante}" converter="omnifaces.SelectItemsIndexConverter" rendered="#{sessao.editor}">
+							<f:selectItems value="#{publicacoes.fabricantes}" />
+						</p:selectOneMenu>
+						<h:outputText value="Revisão:" />
+						<h:outputText value="#{publicacoes.publicacao.atualizacaoRevisao}" rendered="#{not sessao.editor}" />
+						<p:inputText value="#{publicacoes.publicacao.atualizacaoRevisao}" rendered="#{sessao.editor}" />
+						<h:outputText value="Data da Revisão:" />
+						<h:outputText value="#{publicacoes.publicacao.atualizacaoData}" rendered="#{not sessao.editor}"><f:convertDateTime pattern="dd/MM/yyyy" /></h:outputText>
+						<p:datePicker value="#{publicacoes.publicacao.atualizacaoData}" rendered="#{sessao.editor}" />
+						<h:outputText value="Última atualização:" />
+						<h:outputText value="#{publicacoes.publicacao.ultimaAtualizacao}"><f:convertDateTime pattern="dd/MM/yyyy 'às' HH:mm" /></h:outputText>
+						<h:outputText value="Descrição" />
+						<h:outputText value="#{publicacoes.publicacao.descricao}" rendered="#{not sessao.editor}" />
+						<p:inputText value="#{publicacoes.publicacao.descricao}" rendered="#{sessao.editor}" />
+					</p:panelGrid>
+				</div>
+				<p:spacer />
+				<p:commandButton value="Salvar alterações" action="#{publicacoes.salvar}" update="publicacoes" oncomplete="if(!args.validationFailed){PF('detalhesDialog').hide();}" rendered="#{sessao.editor}" styleClass="btn-primary btn-block" />
+			</h:form>
+		</p:dialog>
+		<p:dialog widgetVar="acessosDialog" style="width: 80%;" modal="true" draggable="true" closable="true" resizable="false" showHeader="true" showEffect="fade" hideEffect="fade" closeOnEscape="true" dynamic="true">
+			<f:facet name="header">Instruções de acesso</f:facet>
+			<div class="ui-fluid">
+				<p:panelGrid id="acesso" layout="grid" columns="2" columnClasses="ui-g-3,ui-g-9">
+					<h:outputText value="Título:" />
+					<h:outputText value="#{publicacoes.publicacao.titulo}" />
+					<h:outputText value="Caminho de rede:" />
+					<h:outputText value="#{publicacoes.publicacao.url}" />		
+					<h:outputText value="Descrição:" />
+					<h:outputText value="#{publicacoes.publicacao.descricao}" />
+				</p:panelGrid>
+				<p:spacer rendered="#{not empty publicacoes.publicacao.tutorials}" />
+				<p:dataList id="tutoriais" var="tutorial" value="#{publicacoes.publicacao.tutorials}" type="ordered" rendered="#{not empty publicacoes.publicacao.tutorials}">
+					<f:facet name="header">Tutoriais</f:facet>
+					<p:link value="#{tutorial.titulo}" href="#{tutorial.url}" target="_blank" />
+				</p:dataList>
+			</div>
+		</p:dialog>
+	</ui:define>
+
+</ui:composition>
